@@ -21,6 +21,7 @@ Next we can deduce a few more things from looking at the arguments main receives
 We get one argument in `edi` and one argument in `rsi`, the linux 64bit abi dictates that the first argument to the function is passed in `rdi` and the second in `rsi`.
 Assuming a standard main function like `main(int argc, char *argv[])'` we can accept `rdi` to be `argc` and rsi to be `argv[]`. We can confirm this by checking how the arguments
 are used:
+	
 	# for argc
 	mov     [rbp-20], edi
 	cmp     dword ptr [rbp-20], 2
@@ -63,12 +64,14 @@ at last do some more calculations on whatever number is returned by the second f
 For those interested the first function is some sort of hashing function that looks like SHA-1 and the second function takes whatever hash is given based on our input and converts it to a long where the base to translate from is given in `esi` and the pointer to the string in `rdi`.
 
 For the input to the hashing function we can see that it only gives it one byte at a time at the index the iterator gives:
+	
 	mov     dl, [rdi+rsi]   ; load 1 byte from input string
 	mov     [r15+8], rdx
 	lea     rdi, [r15+8]    
 	mov     esi, 1          ; sz of input
 
 We now have all the information we need to write some pseudocode of the part we're interested in:
+	
 	for (int i = 0; i < 56; ++i)
 	{
 		calculated_dword = hash_and_calc(char_array[i])
@@ -83,4 +86,5 @@ We now have all the information we need to write some pseudocode of the part we'
 So we know that whatever the right input string is will be the flag, we know that hashing functions are one-way and (the clue here is) that hashing functions are deterministic and so are the calculations afterwards. For whatever input character we give we will always get the same calculated_dword back from the function, all that rests now is just giving every character that could possibly appear in the flag
 and check the dword that that specific character generates. Keep a table of every character and their respective DWORD and translate the hardcoded dword array back to their original characters to find the
 flag:
+
 `TUCTF{w3lc0m3_70_7uc7f_4nd_7h4nk_y0u_f0r_p4r71c1p471n6!}`
