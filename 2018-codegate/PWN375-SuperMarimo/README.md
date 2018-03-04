@@ -24,9 +24,9 @@ Each pointer has their own use in the final exploit; using the View marimo optio
 ### Setting up the exploit
 
 To use a one-gadget-RCE we need to know a few things:
-..* libc's base address, because the binary has partial RELRO enabled
-..* the offset from libc's base for our one-gadget 
-..* the address of a got entry we can use to point to our gadget
+* libc's base address, because the binary has partial RELRO enabled
+* the offset from libc's base for our one-gadget 
+* the address of a got entry we can use to point to our gadget
 
 
 #### 1. Finding libc's base address
